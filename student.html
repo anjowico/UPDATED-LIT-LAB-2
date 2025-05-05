@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('BG.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 0 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        h2::after {
+            content: "🎓";
+            font-size: 36px;
+            margin-left: 10px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            text-align: left;
+            color: #444;
+        }
+
+        .form-section input,
+        .form-section select,
+        .form-section button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-section input:focus,
+        .form-section select:focus,
+        .form-section button:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .form-section button {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .form-section button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .form-section .secondary-button {
+            background-color: #2ecc71;
+        }
+
+        .form-section .secondary-button:hover {
+            background-color: #27ae60;
+        }
+
+        ul#classroomList {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul#classroomList li {
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        ul#classroomList li:hover {
+            background-color: #d0d7de;
+        }
+
+        @media (max-width: 600px) {
+            .form-section {
+                padding: 20px;
+                width: 100%;
+                max-width: 100%;
+                max-height: 80vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Page -->
+    <div id="mainContainer" class="form-section">
+        <h2>Welcome to the Student Portal</h2>
+        <button id="signUpBtn" class="secondary-button">Sign Up ✍️</button>
+        <br><br>
+        <button id="loginBtn">Already Have an Account? 🔑</button>
+        <br><br>
+        <!-- Enter Classroom Button to redirect to classroom.2.html -->
+        <button id="enterClassroomBtn" class="secondary-button">Enter Classroom 🏫</button>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="studentFormContainer" class="form-section" style="display: none;">
+        <h2>Student Registration</h2>
+        <form id="fillForm">
+            <label for="studentName">Full Name:</label>
+            <input type="text" id="studentName" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+                <option value="">Select...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-binary">Non-binary</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+
+            <label for="gradeLevel">Grade Level:</label>
+            <input type="text" id="gradeLevel" required>
+
+            <label for="section">Section:</label>
+            <input type="text" id="section" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+
+            <button type="submit">Submit 📝</button>
+        </form>
+    </div>
+
+    <!-- Classroom Code Verification Form -->
+    <div id="enterClassroomContainer" class="form-section" style="display: none;">
+        <h2>Enter Classroom</h2>
+        <input type="text" id="classroomCodeInput" placeholder="Enter Classroom Code" />
+        <button id="verifyClassroomCodeBtn">Verify Code</button>
+    </div>
+
+    <!-- Classroom List (after verification) -->
+    <div id="classroomListContainer" class="form-section" style="display: none;">
+        <h2>Choose Your Classroom</h2>
+        <ul id="classroomList">
+            <!-- Populated by JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        // Button handlers
+        document.getElementById("signUpBtn").onclick = () => {
+            document.getElementById("mainContainer").style.display = "none";
+            document.getElementById("studentFormContainer").style.display = "block";
+        };
+
+        document.getElementById("loginBtn").onclick = () => {
+            // Verify if the student is already registered when clicking "Already Have an Account?"
+            verifyAccount();
+        };
+
+        document.getElementById("enterClassroomBtn").onclick = () => {
+            // When the "Enter Classroom" button is clicked on the front page, redirect to classroom.2.html
+            window.location.href = "classroom.2.html";
+        };
+
+        // Verify account when student clicks "Already Have an Account?" or "Enter Classroom"
+        function verifyAccount() {
+            const studentDetails = JSON.parse(localStorage.getItem("studentDetails"));
+            if (studentDetails) {
+                // If student is already registered, show classroom code input
+                document.getElementById("mainContainer").style.display = "none";
+                document.getElementById("enterClassroomContainer").style.display = "block"; // Show code input field
+            } else {
+                // If no student details are found, prompt for registration
+                alert("You need to sign up first!");
+                document.getElementById("studentFormContainer").style.display = "block";
+            }
+        }
+
+        // Handle registration form submission
+        document.getElementById("fillForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const studentDetails = {
+                name: document.getElementById("studentName").value,
+                gender: document.getElementById("gender").value,
+                gradeLevel: document.getElementById("gradeLevel").value,
+                section: document.getElementById("section").value,
+                email: document.getElementById("email").value
+            };
+
+            // Save student details to localStorage
+            localStorage.setItem("studentDetails", JSON.stringify(studentDetails));
+
+            document.getElementById("studentFormContainer").style.display = "none";
+            document.getElementById("enterClassroomContainer").style.display = "block";
+        });
+
+        // Verify classroom code when clicked
+        document.getElementById("verifyClassroomCodeBtn").addEventListener("click", function() {
+            const enteredCode = document.getElementById("classroomCodeInput").value.trim();
+            const classrooms = JSON.parse(localStorage.getItem("classrooms")) || [];
+
+            const classroom = classrooms.find(c => c.code === enteredCode);
+            if (classroom) {
+                // If the code matches a classroom, show the classroom list
+                document.getElementById("enterClassroomContainer").style.display = "none";
+                document.getElementById("classroomListContainer").style.display = "block"; // Show the classroom list
+
+                // Now we populate the classrooms after verification
+                populateClassrooms();
+            } else {
+                alert("Invalid classroom code. Please try again.");
+            }
+        });
+
+        // Populate the list of classrooms after code verification
+        function populateClassrooms() {
+            const classrooms = JSON.parse(localStorage.getItem("classrooms")) || [];
+            const list = document.getElementById("classroomList");
+            list.innerHTML = ""; // Clear any existing classroom list
+
+            if (classrooms.length === 0) {
+                list.innerHTML = "<li>No classrooms available yet.</li>";
+                return;
+            }
+
+            classrooms.forEach(classroom => {
+                const li = document.createElement("li");
+                li.textContent = classroom.name; // Show the classroom name
+
+                // Add a button to allow the student to enter the classroom
+                const enterButton = document.createElement("button");
+                enterButton.textContent = "Enter Classroom";
+                enterButton.onclick = () => {
+                    // Here you can redirect the student to the classroom
+                    window.location.href = `classroom.2.html?name=${encodeURIComponent(classroom.name)}&code=${encodeURIComponent(classroom.code)}`;
+                };
+                
+                li.appendChild(enterButton); // Append the button to the list item
+                list.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>

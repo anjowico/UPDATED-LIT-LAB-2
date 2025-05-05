@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 50px;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #457B9D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #1D3557;
+        }
+        .archiveButton {
+            background-color: orange;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .archiveButton:hover {
+            background-color: #D57D24;
+        }
+        .deleteButton {
+            background-color: red;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .deleteButton:hover {
+            background-color: #9b1111;
+        }
+        .assessmentResults {
+            margin-top: 10px;
+            text-align: left;
+        }
+        .assessmentResults p {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .archivedRecords {
+            margin-top: 40px;
+            border-top: 2px solid #ccc;
+            padding-top: 20px;
+            display: none; /* Initially hide archived records */
+        }
+        .archivedRecords table {
+            width: 80%;
+        }
+        .archivedRecords th {
+            background-color: #FF8C00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Student Records</h1>
+    <button class="button" onclick="goBack()">Go Back</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Grade Level</th>
+                <th>Section</th>
+                <th>Email</th>
+                <th>Assessment Results</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="studentRecords"></tbody>
+    </table>
+
+    <!-- Button to toggle Archived Records -->
+    <button class="button" onclick="toggleArchivedRecords()">Show Archived Records</button>
+
+    <div class="archivedRecords" id="archivedRecordsSection">
+        <h2>Archived Records</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Email</th>
+                    <th>Assessment Results</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="archivedRecords"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        window.onload = function() {
+            // Retrieve student data and archived records from localStorage
+            const studentDetails = JSON.parse(localStorage.getItem("studentDetails"));
+            const archivedRecords = JSON.parse(localStorage.getItem("archivedRecords")) || [];
+
+            // Display student record
+            if (studentDetails) {
+                const tableBody = document.getElementById("studentRecords");
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${studentDetails.name || 'N/A'}</td>
+                    <td>${studentDetails.gradeLevel || 'N/A'}</td>
+                    <td>${studentDetails.section || 'N/A'}</td>
+                    <td>${studentDetails.email || 'N/A'}</td>
+                    <td>${displayAssessmentResults()}</td>
+                    <td><button class="archiveButton" onclick="archiveRecord()">Archive</button></td>
+                `;
+                tableBody.appendChild(row);
+            } else {
+                document.getElementById("studentRecords").innerHTML = "<tr><td colspan='6'>No student records available.</td></tr>";
+            }
+
+            // Display archived records if available
+            displayArchivedRecords(archivedRecords);
+        };
+
+        // Function to display all assessment results
+        function displayAssessmentResults() {
+            const results = JSON.parse(localStorage.getItem('assessmentResults')) || [];
+
+            if (results.length === 0) {
+                return "No assessment results.";
+            }
+
+            const resultsContainer = document.createElement('div');
+            resultsContainer.classList.add('assessmentResults');
+
+            results.forEach(result => {
+                const resultElement = document.createElement('p');
+                resultElement.innerHTML = `<strong>${result.assessment}</strong>: ${result.result === 1 ? 'Correct' : 'Incorrect'}`;
+                resultsContainer.appendChild(resultElement);
+            });
+
+            return resultsContainer.outerHTML;
+        }
+
+        // Function to archive the current student record
+        function archiveRecord() {
+            const studentDetails = JSON.parse(localStorage.getItem("studentDetails"));
+            const assessmentResults = JSON.parse(localStorage.getItem("assessmentResults"));
+
+            if (studentDetails && assessmentResults) {
+                let archivedRecords = JSON.parse(localStorage.getItem("archivedRecords")) || [];
+
+                // Add the student and their results to archived records
+                archivedRecords.push({ studentDetails, assessmentResults });
+
+                // Update localStorage with new archived records
+                localStorage.setItem("archivedRecords", JSON.stringify(archivedRecords));
+
+                // Remove student record from current records
+                localStorage.removeItem("studentDetails");
+                localStorage.removeItem("assessmentResults");
+
+                // Refresh page to show the updates
+                window.location.reload();
+            }
+        }
+
+        // Function to display archived records
+        function displayArchivedRecords(archivedRecords) {
+            const archivedTableBody = document.getElementById("archivedRecords");
+
+            if (archivedRecords.length === 0) {
+                archivedTableBody.innerHTML = "<tr><td colspan='6'>No archived records available.</td></tr>";
+                return;
+            }
+
+            archivedRecords.forEach((record, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${record.studentDetails.name || 'N/A'}</td>
+                    <td>${record.studentDetails.gradeLevel || 'N/A'}</td>
+                    <td>${record.studentDetails.section || 'N/A'}</td>
+                    <td>${record.studentDetails.email || 'N/A'}</td>
+                    <td>${displayAssessmentResultsForArchive(record.assessmentResults)}</td>
+                    <td><button class="deleteButton" onclick="deleteArchivedRecord(${index})">Delete</button></td>
+                `;
+                archivedTableBody.appendChild(row);
+            });
+        }
+
+        // Function to display assessment results for archived records
+        function displayAssessmentResultsForArchive(results) {
+            if (results.length === 0) {
+                return "No assessment results.";
+            }
+
+            const resultsContainer = document.createElement('div');
+            resultsContainer.classList.add('assessmentResults');
+
+            results.forEach(result => {
+                const resultElement = document.createElement('p');
+                resultElement.innerHTML = `<strong>${result.assessment}</strong>: ${result.result === 1 ? 'Correct' : 'Incorrect'}`;
+                resultsContainer.appendChild(resultElement);
+            });
+
+            return resultsContainer.outerHTML;
+        }
+
+        // Function to delete an archived record
+        function deleteArchivedRecord(index) {
+            let archivedRecords = JSON.parse(localStorage.getItem("archivedRecords")) || [];
+            archivedRecords.splice(index, 1);  // Remove the record at the specified index
+            localStorage.setItem("archivedRecords", JSON.stringify(archivedRecords));
+
+            // Refresh the archived records display
+            displayArchivedRecords(archivedRecords);
+        }
+
+        // Function to toggle visibility of archived records
+        function toggleArchivedRecords() {
+            const archivedRecordsSection = document.getElementById("archivedRecordsSection");
+            const isVisible = archivedRecordsSection.style.display === "block";
+
+            // Toggle visibility
+            archivedRecordsSection.style.display = isVisible ? "none" : "block";
+
+            // Change button text accordingly
+            const toggleButton = document.querySelector(".button");
+            toggleButton.textContent = isVisible ? "Show Archived Records" : "Hide Archived Records";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom - ACCIE Lit Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Body Styling */
+    /* Layout */
+    body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom right, #e3f2fd, #fffde7);
+  padding: 20px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Container for stories */
+.story-card {
+  background: #ffffff;
+  border-left: 6px solid #4CAF50;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* Header for stories */
+.story-header h3 {
+  font-size: 22px;
+  color: #388e3c;
+  margin: 0;
+  padding-bottom: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.story-content {
+  display: none;
+  margin-top: 10px;
+  font-size: 15px;
+  color: #555;
+  line-height: 1.8;
+}
+
+.story-image, .story-video {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Highlighted Tooltip Words */
+.highlight {
+  background-color: #fff59d;
+  padding: 2px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.highlight:hover {
+  background-color: #ffeb3b;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 230px;
+  background-color: #1add09;
+  color: #333;
+  text-align: left;
+  padding: 12px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Buttons */
+/* Button styles */
+button {
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  padding: 12px 20px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+  display: inline-block;
+  margin: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Read Aloud Button (Green) */
+.btn-speak {
+  background-color: #66bb6a; /* Ensure full opacity (non-transparent) */
+  background-image: none; /* Avoid any background image that might cause transparency */
+  opacity: 1; /* Full opacity (non-transparent) */
+}
+.btn-speak:hover {
+  background-color: #388e3c; /* Hover effect color */
+  transform: scale(1.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Pause Button (Orange) */
+.btn-pause {
+  background-color: #ff9800; /* Ensure full opacity (non-transparent) */
+  background-image: none; /* Avoid any background image that might cause transparency */
+  opacity: 1; /* Full opacity (non-transparent) */
+}
+.btn-pause:hover {
+  background-color: #f57c00; /* Hover effect color */
+  transform: scale(1.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Resume Button (Blue) */
+.btn-resume {
+  background-color: #2196f3; /* Ensure full opacity (non-transparent) */
+  background-image: none; /* Avoid any background image that might cause transparency */
+  opacity: 1; /* Full opacity (non-transparent) */
+}
+.btn-resume:hover {
+  background-color: #03af0b; /* Hover effect color */
+  transform: scale(1.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Focused Button (for keyboard navigation) */
+button:focus {
+  outline: none;
+  border: 2px solid #81c784;
+}
+
+/* Optional - Adding hover effects and focus outline */
+button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+/* General Button Style for simple-btn */
+.simple-btn {
+  font-family: 'Poppins', sans-serif;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #4CAF50; /* Default Green */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+.simple-btn:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  transform: scale(1.05); /* Slightly enlarge on hover */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
+}
+
+.simple-btn:active {
+  background-color: #388e3c; /* Even darker green on click */
+  transform: scale(1.02); /* Slightly shrink on click */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Less shadow on click */
+}
+
+.simple-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.5); /* Blue focus ring */
+}
+
+/* Icon + Text Alignment */
+.simple-btn i {
+  font-size: 20px;
+  margin-right: 10px; /* Space between icon and text */
+}
+
+.simple-btn:disabled {
+  background-color: #cccccc; /* Gray background for disabled */
+  cursor: not-allowed; /* Change cursor to not-allowed */
+  opacity: 0.6; /* Faint appearance for disabled */
+  box-shadow: none; /* Remove shadow when disabled */
+}
+
+
+/* Progress Bar */
+.progress-bar-container {
+  background-color: #d5dfdf;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 12px;
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #66bb6a, #43a047);
+  transition: width 0.5s ease-in-out;
+  border-radius: 10px;
+}
+
+.progress-bar-text {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+  font-weight: bold;
+}
+/* Style for the comment section */
+.comment-section {
+  background-color: #fff; /* White background for the section */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  max-width: 600px; /* Limit the maximum width of the comment section */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.comment-section h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Styling for the text area where users write comments */
+.comment-input {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid #4CAF50; /* Green border to match the theme */
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fafafa; /* Light background */
+  resize: vertical; /* Allow users to resize the textarea vertically */
+  box-sizing: border-box; /* Ensures padding is included in the width */
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.comment-input:focus {
+  border-color: #388e3c; /* Darker green when focused */
+  outline: none;
+  background-color: #fff; /* Lighter background when focused */
+}
+
+/* Submit button styling */
+.submit-comment {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%;
+}
+
+.submit-comment:hover {
+  background-color: #388e3c; /* Darker green on hover */
+  transform: scale(1.05);
+}
+
+.submit-comment:active {
+  background-color: #2e7d32; /* Even darker green on click */
+  transform: scale(1);
+}
+
+.submit-comment:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Responsiveness for smaller screens */
+@media (max-width: 600px) {
+  .comment-section {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .comment-input {
+    font-size: 14px;
+  }
+
+  .submit-comment {
+    font-size: 14px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Classroom</h1>
+        <p id="classroomInfo"></p>
+        
+        <h2>Literary Pieces</h2>
+        <ul class="literary-list" id="literaryList">
+            <!-- Let's Go Visit Thailand! -->
+            <li onclick="toggleStory('Lets Go Visit Thailand!')">Let's Go Visit Thailand!</li>
+            <div id="Lets Go Visit Thailand!" class="literary-content">
+                <p id="storyText">
+                    Thailand is one country in Southeast Asia worth visiting if you are a culture-oriented person. Why? There are countless reasons but try considering some. First, Bangkok, the capital city, is just three and a half hours of flight away from our country. The fare is not that much compared to other nearby cities or countries like <span class="highlight" onclick="showDefinition('Southeast')">Southeast</span> Asia. Second, there are lots of sights, sounds, smells, and tastes to experience. Very interesting are the various types of statues of Buddha in <span class="highlight" onclick="showDefinition('temples')">temples</span> of worship. The floating markets are an awesome sight and place to be if you are to spend your whole day with adventure and do are the shopping centers. A four-day-three-night stay in Bangkok, Thailand may just be a dream, much like in our country. However, it is its amazing culture that attracts you to always return for the second time, third time, and so on.
+                </p>
+                <button class="btn-speak" onclick="speakStory('Lets Go Visit Thailand!')">🔊Read Aloud</button>
+                <button class="btn-speak" onclick="pauseSpeech()">⏸️ Pause</button>
+<button class="btn-speak" onclick="resumeSpeech()">▶️Resume</button>
+                
+        <!-- Image and Video -->
+        <div id="mediaContainer">
+            <img src="1.jpg" alt="Image of Thailand" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="2.jpg" alt="Image of Thailand" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="3.jpg" alt="Image of Thailand" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="4.jpg" alt="Image of Thailand" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <br>
+            <video width="100%" controls>
+                <source src="Let's go visit thailand.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        
+<div class="progress-bar-container">
+    <div id="progressBar_Lets Go Visit Thailand!" class="progress-bar"></div>
+            </div>
+             
+            <!-- The Stonecutter -->
+            <li onclick="toggleStory('stoneCutter')">The Stonecutter</li>
+            <div id="stoneCutter" class="literary-content">
+                <p id="storyText">
+                    There was once a <span class="highlight" onclick="showDefinition('stonecutter')">stonecutter</span> who was dissatisfied with himself and with his position in life. One day, he passed a wealthy merchant's house and through the open gateway saw many fine possessions and important visitors. "How powerful that merchant must be?" thought the stonecutter. He became very envious, and wished that he would no longer have to live the life of mere stonecutter. To his great surprise, he suddenly became the merchant, enjoying more luxuries and power than he had ever dreamed of, envied and detested by those less wealthy than himself. But soon a high official passed by, carried in a sedan chair, accompanied by attendants, and escorted by soldiers beating gongs. Everyone, no matter how wealthy, had to bow low before the procession. "How powerful that official is!" he thought. "I wish that I could be a high official!" 
+                    Then he became high official, carried everywhere in his embroidered sedan chair, feared and hated by the people all around, who had to bow down before him as he passed. It was a hot summer day, and the official felt very uncomfortable in the sticky sedan chair. He looked up at the sun. It shone proudly in the sky, unaffected by his presence. "How powerful the sun is!" he thought. "I wish I could be the sun!"
+                </p>
+
+                <button class="btn-speak" onclick="speakStory('stoneCutter')">🔊Read Aloud</button>
+                <button class="btn-speak" onclick="pauseSpeech()">⏸️ Pause</button>
+<button class="btn-speak" onclick="resumeSpeech()">▶️Resume</button>
+                
+        <!-- Image and Video -->
+        <div id="mediaContainer">
+            <img src="5.jpg" alt="Image of " style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="6.jpg" alt="Image of " style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="7.jpg" alt="Image of " style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <br>
+            <video width="100%" controls>
+                <source src="stonecutter.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+<div class="progress-bar-container">
+    <div id="progressBar_stoneCutter" class="progress-bar"></div>
+            </div>
+
+            <!-- Adopting a Pet from the Pound -->
+            <li onclick="toggleStory('adoptingPet')">Adopting a Pet from the Pound</li>
+            <div id="adoptingPet" class="literary-content">
+                <p id="storyText">
+                    Owning a pet from the pound or Animal Rescue League has many advantages. First of all, a child feels good about rescuing an abandoned or abused animal and giving it a whole new life. Besides, if the animals from the pound aren't adopted right away, they might be put to sleep. Having a pet also means lots of responsibilities. A child has to feed, clean up after, brush, and exercise the pet. Another great advantage of having a pet from the pound is the price of these cute and cuddly animals. Pets from the pound cost a lot less than pets at a fancy pet store, which can cost hundreds of dollars.
+                    Once you adopt a pet from the Animal Rescue League, it will quickly become a part of your family. If you are thinking of adopting a pet, you might consider choosing a <span class="highlight" onclick="showDefinition('dog')">dog</span> or a <span class="highlight" onclick="showDefinition('cat')">cat</span>. Dogs and cats can bring lots of happy times to a family, and they can be excellent companions for a person who lives alone or someone who has lost a loved one. Dogs are also a wonderful source of protection. Cats are funny, and they may help to calm people down when they are sad or mad.
+                </p>
+
+                <button class="btn-speak" onclick="speakStory('adoptingPet')">🔊Read Aloud</button>
+                <button class="btn-speak" onclick="pauseSpeech()">⏸️ Pause</button>
+<button class="btn-speak" onclick="resumeSpeech()">▶️Resume</button>
+        <!-- Image and Video -->
+        <div id="mediaContainer">
+            <img src="8.jpg" alt="Image" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="9.jpg" alt="Image" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <img src="10.jpg" alt="Image" style="max-width: 25%; height: auto; border-radius: 8px; margin-top: 20px;">
+            <br>
+            <video width="100%" controls>
+                <source src="Adopting a pet from pound.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+<div class="progress-bar-container">
+    <div id="progressBar_adoptingPet" class="progress-bar"></div>
+            </div>
+           
+        </ul>
+
+        <!-- Button to go to the assessment page -->
+        <button id="assessmentBtn" class="button" onclick="redirectToAssessment()" disabled>🎯 Go to Assessment</button>
+
+        <!-- Button to view additional stories -->
+        <button class="simple-btn" onclick="window.location.href='stories.html'">📚View Additional Stories</button>
+
+        <!-- Button to go to Dictionary -->
+        <button class="simple-btn" onclick="window.location.href='dictionary.html'">📓Go to Dictionary</button>
+
+        <!-- Comment Section -->
+        <h2>Leave a Comment</h2>
+        <textarea class="comment-input" id="commentInput" placeholder="Type your comment..."></textarea>
+        <button class="simple-btn" onclick="postComment()">💬Post Comment💬</button>
+
+        <div class="comment-section" id="commentSection">
+            <!-- Existing comments will be appended here dynamically -->
+        </div>
+
+        <!-- Definition Modal -->
+        <div id="wordDefinition">
+            <p>Click on a highlighted word to see its definition here.</p>
+        </div>
+    </div>
+
+    <div id="warningMessage" class="warning" style="display:none;">
+        You need to finish listening to all the stories before proceeding to the assessment.
+    </div>
+</div>
+
+    <script>
+        // Function to redirect to the assessment page
+        function redirectToAssessment() {
+            window.location.href = "assessment-page.html"; // Update the URL to your actual assessment page URL
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let params = new URLSearchParams(window.location.search);
+            let className = params.get("name");
+            let classCode = params.get("code");
+            document.getElementById("classroomInfo").innerText = `Classroom: ${className} (Code: ${classCode})`;
+        });
+
+        function toggleStory(id) {
+            let element = document.getElementById(id);
+            element.style.display = element.style.display === "none" ? "block" : "none";
+        }
+
+        function showDefinition(word) {
+            let definition = '';
+            switch(word) {
+                case 'Southeast':
+                    definition = 'Southeast Asia is a region of Asia that includes countries like Thailand, Indonesia, and Vietnam.'; break;
+                case 'temples':
+                    definition = 'Temples are places of worship, especially in certain religions like Buddhism and Hinduism.'; break;
+                case 'stonecutter':
+                    definition = 'A stonecutter is a person who carves or shapes stone, especially for construction or sculpture.'; break;
+                case 'dog':
+                    definition = 'A dog is a domesticated carnivorous mammal, commonly kept as a pet or for work.'; break;
+                case 'cat':
+                    definition = 'A cat is a small domesticated carnivorous mammal, often kept as a pet.'; break;
+                default:
+                    definition = 'Definition not found.'; break;
+            }
+            const definitionContainer = document.getElementById('wordDefinition');
+            definitionContainer.innerHTML = `<p><strong>${word}:</strong> ${definition}</p>`;
+            definitionContainer.style.display = 'block';
+        }
+
+        // Function to post a comment
+        function postComment() {
+            const commentInput = document.getElementById('commentInput');
+            const commentText = commentInput.value.trim();
+            if (commentText !== '') {
+                const commentSection = document.getElementById('commentSection');
+
+                // Create the comment elements
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+
+                const commentAvatar = document.createElement('div');
+                commentAvatar.classList.add('comment-avatar');
+
+                const commentBody = document.createElement('div');
+                commentBody.classList.add('comment-body');
+
+                const commentContent = document.createElement('p');
+                commentContent.innerText = commentText;
+
+                const commentTime = document.createElement('span');
+                commentTime.classList.add('comment-time');
+                commentTime.innerText = new Date().toLocaleString();
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.innerText = 'Delete';
+                deleteBtn.onclick = function() {
+                    commentSection.removeChild(commentDiv);
+                };
+
+                commentBody.appendChild(commentContent);
+                commentBody.appendChild(commentTime);
+                commentDiv.appendChild(commentAvatar);
+                commentDiv.appendChild(commentBody);
+                commentDiv.appendChild(deleteBtn);
+
+                // Append the comment to the comment section
+                commentSection.appendChild(commentDiv);
+
+                // Clear the input field
+                commentInput.value = '';
+            }
+        }
+        let currentSpeech = null;  // Variable to keep track of the current speech utterance
+        let listeningProgress = {}; // Object to track progress for each story
+        let totalStories = 3;  // Start with one story, you can increase this as more stories are added
+        let completedStories = 0; // Track the number of completed stories
+
+        // Function to redirect to the assessment page
+        function redirectToAssessment() {
+            if (completedStories === totalStories) {
+                window.location.href = "assessment-page.html"; // Update the URL to your actual assessment page URL
+            } else {
+                document.getElementById("warningMessage").style.display = "block"; // Show the warning message
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let params = new URLSearchParams(window.location.search);
+            let className = params.get("name");
+            let classCode = params.get("code");
+            document.getElementById("classroomInfo").innerText = `Classroom: ${className} (Code: ${classCode})`;
+        });
+
+        function toggleStory(id) {
+  const content = document.getElementById(id);
+  content.style.display = content.style.display === 'block' ? 'none' : 'block';
+}
+
+
+        function updateProgressBar(storyId) {
+            const progressBar = document.getElementById("progressBar_" + storyId);
+            progressBar.style.width = `${listeningProgress[storyId]}%`;
+
+            // Check if this story has reached 100% progress
+            if (listeningProgress[storyId] === 100 && !listeningProgress[storyId].completed) {
+                listeningProgress[storyId].completed = true;
+                completedStories++;
+            }
+
+            // Enable the Go to Assessment button only when all stories are completed
+            if (completedStories === totalStories) {
+                document.getElementById("assessmentBtn").disabled = false;
+            }
+        }
+
+        function speakStory(storyId) {
+            // If there's an ongoing speech, stop it first
+            if (currentSpeech) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Reset progress for the selected story
+            listeningProgress[storyId] = 0;
+            updateProgressBar(storyId);
+
+            // Get the text of the story
+            let storyText = document.getElementById(storyId).querySelector("p").innerText;
+
+            // Create a new SpeechSynthesisUtterance for the story
+            currentSpeech = new SpeechSynthesisUtterance(storyText);
+            currentSpeech.lang = 'en-US';
+
+            // Start speaking the text
+            window.speechSynthesis.speak(currentSpeech);
+
+            // Update listening progress
+            currentSpeech.onboundary = function(event) {
+                listeningProgress[storyId] = (event.charIndex / storyText.length) * 100;
+                updateProgressBar(storyId);
+            };
+
+            // Add event listener to handle when speech finishes
+            currentSpeech.onend = function () {
+                listeningProgress[storyId] = 100; // Ensure listening progress is set to 100 when speech ends
+                updateProgressBar(storyId);
+            };
+        }
+
+        // Function to pause the speech
+        function pauseSpeech() {
+            if (currentSpeech && window.speechSynthesis.speaking) {
+                window.speechSynthesis.pause();
+            }
+        }
+
+        // Function to resume the speech
+        function resumeSpeech() {
+            if (currentSpeech && window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+            }
+        }
+    </script>
+</body>
+</html>
